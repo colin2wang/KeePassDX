@@ -45,6 +45,13 @@ if ($Help) {
     exit 0
 }
 
+# Use a supported JDK if JAVA_HOME points to an unsupported one (e.g. Android Studio's JBR 25).
+$preferredJdk = "D:\Software\Frameworks\jdk-21.0.9-x64"
+if ((Test-Path $preferredJdk) -and ($env:JAVA_HOME -ne $preferredJdk)) {
+    $env:JAVA_HOME = $preferredJdk
+    $env:Path = "$preferredJdk\bin;$env:Path"
+}
+
 # Locate gradlew.bat in the script directory
 $gradlew = Join-Path $PSScriptRoot "gradlew.bat"
 if (-not (Test-Path $gradlew)) {
