@@ -20,6 +20,7 @@
 package com.kunzisoft.keepass.activities.helpers
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -219,6 +220,35 @@ object ExternalFileHelper {
         )
     }
 
+    /**
+     * Candidate components of the AOSP DocumentsUI picker.
+     * On HyperOS/MIUI, implicit ACTION_OPEN_DOCUMENT intents are hijacked by
+     * com.android.fileexplorer (Xiaomi file manager), so an explicit component
+     * pointing to the native DocumentsUI is used when it is installed.
+     */
+    private val DOCUMENTSUI_CANDIDATES = arrayOf(
+        ComponentName("com.android.documentsui", "com.android.documentsui.picker.PickActivity"),
+        ComponentName("com.android.documentsui", "com.android.documentsui.files.FilesActivity"),
+        ComponentName("com.google.android.documentsui", "com.android.documentsui.picker.PickActivity"),
+        ComponentName("com.google.android.documentsui", "com.android.documentsui.files.FilesActivity")
+    )
+
+    private fun Intent.forceNativeDocumentsUI(context: Context) {
+        val packageManager = context.packageManager
+        for (component in DOCUMENTSUI_CANDIDATES) {
+            try {
+                // Only pick a component that actually exists on this device
+                packageManager.getActivityInfo(component, 0)
+                this.component = component
+                return
+            } catch (e: Exception) {
+                // Try the next candidate
+            }
+        }
+        // No native DocumentsUI found: leave the intent implicit
+        Log.i(TAG, "Native DocumentsUI not found, using implicit file picker intent")
+    }
+
     class OpenDocument : ActivityResultContracts.OpenDocument() {
         @SuppressLint("InlinedApi")
         override fun createIntent(context: Context, input: Array<String>): Intent {
@@ -230,6 +260,7 @@ object ExternalFileHelper {
                 }
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                forceNativeDocumentsUI(context)
             }
         }
     }
@@ -245,6 +276,7 @@ object ExternalFileHelper {
                 }
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                forceNativeDocumentsUI(context)
             }
         }
     }

@@ -17,6 +17,8 @@ android {
 
     defaultConfig {
         applicationId = "com.kunzisoft.keepass"
+        // Separate package id so this build can coexist with the original app
+        applicationIdSuffix = ".hyperos"
         minSdk = 19
         targetSdk = 36
         versionCode = 45800
@@ -36,6 +38,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            // Sign release builds with the debug keystore so they can be
+            // installed directly (unsigned APKs fail with "PackageInfo is null")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 

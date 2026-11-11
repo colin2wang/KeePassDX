@@ -53,6 +53,9 @@
             <action android:name="android.intent.action.CREATE_DOCUMENT" />
             <data android:mimeType="application/octet-stream" />
         </intent>
+        <!-- Native DocumentsUI (explicit file picker on HyperOS, see ExternalFileHelper) -->
+        <package android:name="com.android.documentsui" />
+        <package android:name="com.google.android.documentsui" />
     </queries>
 
     <application

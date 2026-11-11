@@ -1,5 +1,23 @@
 # Android KeePassDX
 
+English | [中文](README.zh-CN.md)
+
+> ## About this fork
+>
+> This fork is based on the original **KeePassDX 4.5.8** and contains the following changes:
+>
+> - **Force the native Android DocumentsUI file picker**: on Xiaomi HyperOS, the standard
+>   `ACTION_OPEN_DOCUMENT` request is silently redirected to the Xiaomi File Manager's
+>   "Safe Access" (安全访问) flow. This fork sends an **explicit intent** to the native
+>   `com.android.documentsui` / `com.google.android.documentsui` picker instead
+>   (see `ExternalFileHelper.kt` and the `<queries>` declarations in `AndroidManifest.xml`),
+>   with a graceful fallback to the implicit intent when native DocumentsUI is unavailable.
+> - **Cloud storage support**: through the native DocumentsUI picker, database files
+>   hosted on **OneDrive** and other cloud/storage providers remain accessible as before.
+> - **Coexists with the original app**: the application ID is suffixed with `.hyperos`
+>   (`com.kunzisoft.keepass.hyperos.*`) and the launcher name is `KeePassDX-HyperOS`,
+>   so it installs alongside the original KeePassDX without overwriting it.
+
 <img alt="KeePassDX Icon" src="https://raw.githubusercontent.com/Kunzisoft/KeePassDX/master/art/icon.png"> **Lightweight password safe and manager for Android**, KeePassDX allows editing encrypted data in a single file in KeePass format and fill in the forms in a secure way.
 
 <img alt="KeePassDX Screenshot" src="https://raw.githubusercontent.com/Kunzisoft/KeePassDX/master/art/screen.jpg" width="220">
